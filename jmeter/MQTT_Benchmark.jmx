@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="MQTT Protocol Benchmark">
+      <stringProp name="TestPlan.comments">MQTT Protokolü – Benchmark
+Plugin: JMeter MQTT Plugin (https://github.com/emqx/mqtt-jmeter)
+Broker: localhost:1883
+Request Topic : benchmark/request
+Response Topic: benchmark/response/{clientId}</stringProp>
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
+    </TestPlan>
+    <hashTree>
+
+      <!-- S2: Light Load -->
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="S2_LightLoad">
+        <stringProp name="ThreadGroup.num_threads">10</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">5</stringProp>
+        <stringProp name="ThreadGroup.duration">120</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
+          <boolProp name="LoopController.continue_forever">true</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+
+        <!-- MQTT Bağlan -->
+        <GenericSampler guiclass="org.apache.jmeter.protocol.mqtt.sampler.ConnectSamplerUI"
+                        testclass="org.apache.jmeter.protocol.mqtt.sampler.ConnectSampler"
+                        testname="MQTT Bağlan">
+          <stringProp name="mqtt.broker.addr">tcp://localhost:1883</stringProp>
+          <stringProp name="mqtt.client.id">jmeter_${__threadNum}_${__time()}</stringProp>
+          <stringProp name="mqtt.conn.cleanSession">true</stringProp>
+          <stringProp name="mqtt.conn.timeout">10</stringProp>
+          <stringProp name="mqtt.conn.keep.alive">60</stringProp>
+        </GenericSampler>
+        <hashTree/>
+
+        <!-- MQTT Mesaj Yayınla -->
+        <GenericSampler guiclass="org.apache.jmeter.protocol.mqtt.sampler.PublishSamplerUI"
+                        testclass="org.apache.jmeter.protocol.mqtt.sampler.PublishSampler"
+                        testname="MQTT Publish">
+          <stringProp name="mqtt.topic">benchmark/request</stringProp>
+          <stringProp name="mqtt.message">{"clientId":"jmeter_${__threadNum}","sequenceNo":${__counter(TRUE,)},"sentAt":${__time()},"data":"MQTT_LIGHT_PAYLOAD_256B"}</stringProp>
+          <stringProp name="mqtt.qos">1</stringProp>
+          <boolProp name="mqtt.message.retained">false</boolProp>
+        </GenericSampler>
+        <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="200ms">
+            <stringProp name="ConstantTimer.delay">200</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+
+        <!-- MQTT Bağlantı Kes -->
+        <GenericSampler guiclass="org.apache.jmeter.protocol.mqtt.sampler.DisconnectSamplerUI"
+                        testclass="org.apache.jmeter.protocol.mqtt.sampler.DisconnectSampler"
+                        testname="MQTT Bağlantı Kes"/>
+        <hashTree/>
+
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="S2 MQTT Özet">
+          <objProp>
+            <n>saveConfig</n>
+            <value class="SampleSaveConfiguration">
+              <time>true</time><latency>true</latency><timestamp>true</timestamp>
+              <success>true</success><label>true</label><code>true</code>
+              <bytes>true</bytes><connectTime>true</connectTime><fieldNames>true</fieldNames>
+            </value>
+          </objProp>
+          <stringProp name="filename">jmeter-results/MQTT_S2_LightLoad.csv</stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+
+      <!-- S3: Normal Load -->
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="S3_NormalLoad">
+        <stringProp name="ThreadGroup.num_threads">50</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">15</stringProp>
+        <stringProp name="ThreadGroup.duration">300</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
+          <boolProp name="LoopController.continue_forever">true</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <GenericSampler guiclass="org.apache.jmeter.protocol.mqtt.sampler.ConnectSamplerUI"
+                        testclass="org.apache.jmeter.protocol.mqtt.sampler.ConnectSampler"
+                        testname="MQTT Bağlan">
+          <stringProp name="mqtt.broker.addr">tcp://localhost:1883</stringProp>
+          <stringProp name="mqtt.client.id">jmeter_${__threadNum}_${__time()}</stringProp>
+          <stringProp name="mqtt.conn.cleanSession">true</stringProp>
+          <stringProp name="mqtt.conn.timeout">10</stringProp>
+          <stringProp name="mqtt.conn.keep.alive">60</stringProp>
+        </GenericSampler>
+        <hashTree/>
+
+        <GenericSampler guiclass="org.apache.jmeter.protocol.mqtt.sampler.PublishSamplerUI"
+                        testclass="org.apache.jmeter.protocol.mqtt.sampler.PublishSampler"
+                        testname="MQTT Publish">
+          <stringProp name="mqtt.topic">benchmark/request</stringProp>
+          <stringProp name="mqtt.message">{"clientId":"jmeter_${__threadNum}","sequenceNo":${__counter(TRUE,)},"sentAt":${__time()},"data":"MQTT_NORMAL_PAYLOAD_256B"}</stringProp>
+          <stringProp name="mqtt.qos">1</stringProp>
+          <boolProp name="mqtt.message.retained">false</boolProp>
+        </GenericSampler>
+        <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="100ms">
+            <stringProp name="ConstantTimer.delay">100</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+
+        <GenericSampler guiclass="org.apache.jmeter.protocol.mqtt.sampler.DisconnectSamplerUI"
+                        testclass="org.apache.jmeter.protocol.mqtt.sampler.DisconnectSampler"
+                        testname="MQTT Bağlantı Kes"/>
+        <hashTree/>
+
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="S3 MQTT Özet">
+          <objProp>
+            <n>saveConfig</n>
+            <value class="SampleSaveConfiguration">
+              <time>true</time><latency>true</latency><timestamp>true</timestamp>
+              <success>true</success><bytes>true</bytes><connectTime>true</connectTime>
+              <fieldNames>true</fieldNames>
+            </value>
+          </objProp>
+          <stringProp name="filename">jmeter-results/MQTT_S3_NormalLoad.csv</stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+
+      <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="MQTT Tümü">
+        <objProp>
+          <n>saveConfig</n>
+          <value class="SampleSaveConfiguration">
+            <time>true</time><latency>true</latency><timestamp>true</timestamp>
+            <success>true</success><bytes>true</bytes><connectTime>true</connectTime>
+            <fieldNames>true</fieldNames>
+          </value>
+        </objProp>
+        <stringProp name="filename">jmeter-results/MQTT_ALL.csv</stringProp>
+      </ResultCollector>
+      <hashTree/>
+
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

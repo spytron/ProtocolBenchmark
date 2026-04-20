@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="WebSocket Protocol Benchmark">
+      <stringProp name="TestPlan.comments">WebSocket Protokolü – 9 Senaryo Benchmark
+Plugin: JMeter-WebSocket-Samplers (https://bitbucket.org/pjtr/jmeter-websocket-samplers)
+Sunucu: ws://localhost:5002</stringProp>
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
+    </TestPlan>
+    <hashTree>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- S2: Light Load                                          -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="S2_LightLoad">
+        <stringProp name="ThreadGroup.num_threads">10</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">5</stringProp>
+        <stringProp name="ThreadGroup.duration">120</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
+          <boolProp name="LoopController.continue_forever">true</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+
+        <!-- Bağlantı aç -->
+        <GenericSampler guiclass="eu.luminis.jmeter.wssampler.OpenWebSocketSamplerUI"
+                        testclass="eu.luminis.jmeter.wssampler.OpenWebSocketSampler"
+                        testname="WS Bağlantı Aç">
+          <stringProp name="server">localhost</stringProp>
+          <stringProp name="port">5002</stringProp>
+          <stringProp name="path">/</stringProp>
+          <intProp name="connectTimeout">5000</intProp>
+          <intProp name="readTimeout">10000</intProp>
+        </GenericSampler>
+        <hashTree/>
+
+        <!-- Mesaj gönder ve yanıt al -->
+        <GenericSampler guiclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSamplerUI"
+                        testclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler"
+                        testname="WS Mesaj Gönder/Al">
+          <stringProp name="requestData">{"clientId":"jmeter_${__threadNum}","sequenceNo":${__counter(TRUE,)},"sentAt":${__time()},"data":"WS_LIGHT_LOAD_PAYLOAD_256B_XXX"}</stringProp>
+          <boolProp name="binaryPayload">false</boolProp>
+          <intProp name="readTimeout">5000</intProp>
+        </GenericSampler>
+        <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="200ms">
+            <stringProp name="ConstantTimer.delay">200</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+
+        <!-- Bağlantı kapat -->
+        <GenericSampler guiclass="eu.luminis.jmeter.wssampler.CloseWebSocketSamplerUI"
+                        testclass="eu.luminis.jmeter.wssampler.CloseWebSocketSampler"
+                        testname="WS Bağlantı Kapat">
+          <intProp name="status">1000</intProp>
+        </GenericSampler>
+        <hashTree/>
+
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="S2 WS Özet">
+          <objProp>
+            <n>saveConfig</n>
+            <value class="SampleSaveConfiguration">
+              <time>true</time><latency>true</latency><timestamp>true</timestamp>
+              <success>true</success><label>true</label><code>true</code>
+              <bytes>true</bytes><connectTime>true</connectTime><fieldNames>true</fieldNames>
+            </value>
+          </objProp>
+          <stringProp name="filename">jmeter-results/WebSocket_S2_LightLoad.csv</stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- S3: Normal Load                                         -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="S3_NormalLoad">
+        <stringProp name="ThreadGroup.num_threads">50</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">15</stringProp>
+        <stringProp name="ThreadGroup.duration">300</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
+          <boolProp name="LoopController.continue_forever">true</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <GenericSampler guiclass="eu.luminis.jmeter.wssampler.OpenWebSocketSamplerUI"
+                        testclass="eu.luminis.jmeter.wssampler.OpenWebSocketSampler"
+                        testname="WS Bağlantı Aç">
+          <stringProp name="server">localhost</stringProp>
+          <stringProp name="port">5002</stringProp>
+          <stringProp name="path">/</stringProp>
+          <intProp name="connectTimeout">5000</intProp>
+          <intProp name="readTimeout">10000</intProp>
+        </GenericSampler>
+        <hashTree/>
+
+        <GenericSampler guiclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSamplerUI"
+                        testclass="eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler"
+                        testname="WS Mesaj Gönder/Al">
+          <stringProp name="requestData">{"clientId":"jmeter_${__threadNum}","sequenceNo":${__counter(TRUE,)},"sentAt":${__time()},"data":"WS_NORMAL_LOAD_PAYLOAD_256B"}</stringProp>
+          <boolProp name="binaryPayload">false</boolProp>
+          <intProp name="readTimeout">5000</intProp>
+        </GenericSampler>
+        <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="100ms">
+            <stringProp name="ConstantTimer.delay">100</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+
+        <GenericSampler guiclass="eu.luminis.jmeter.wssampler.CloseWebSocketSamplerUI"
+                        testclass="eu.luminis.jmeter.wssampler.CloseWebSocketSampler"
+                        testname="WS Kapat">
+          <intProp name="status">1000</intProp>
+        </GenericSampler>
+        <hashTree/>
+
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="S3 WS Özet">
+          <objProp>
+            <n>saveConfig</n>
+            <value class="SampleSaveConfiguration">
+              <time>true</time><latency>true</latency><timestamp>true</timestamp>
+              <success>true</success><label>true</label><code>true</code>
+              <bytes>true</bytes><connectTime>true</connectTime><fieldNames>true</fieldNames>
+            </value>
+          </objProp>
+          <stringProp name="filename">jmeter-results/WebSocket_S3_NormalLoad.csv</stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+
+      <!-- Aggregate -->
+      <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="WS Tümü">
+        <objProp>
+          <n>saveConfig</n>
+          <value class="SampleSaveConfiguration">
+            <time>true</time><latency>true</latency><timestamp>true</timestamp>
+            <success>true</success><bytes>true</bytes><connectTime>true</connectTime>
+            <fieldNames>true</fieldNames>
+          </value>
+        </objProp>
+        <stringProp name="filename">jmeter-results/WebSocket_ALL.csv</stringProp>
+      </ResultCollector>
+      <hashTree/>
+
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

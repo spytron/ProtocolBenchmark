@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="REST Protocol Benchmark">
+      <stringProp name="TestPlan.comments">REST Protokolü – 9 Senaryo Benchmark
+Sunucu: http://localhost:5000
+Endpoint: POST /message</stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
+    </TestPlan>
+    <hashTree>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- S1: Smoke Test                                          -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="S1_Smoke">
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">0</stringProp>
+        <stringProp name="ThreadGroup.duration">30</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
+          <boolProp name="LoopController.continue_forever">true</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="REST POST /message">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">5000</stringProp>
+          <stringProp name="HTTPSampler.path">/message</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <stringProp name="Argument.value">{"clientId":"jmeter_${__threadNum}","sequenceNo":${__counter(TRUE,)},"sentAt":${__time()},"data":"SMOKE_TEST_PAYLOAD_DATA"}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <elementProp name="HTTPsampler.Headers" elementType="HeaderManager">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 200 Kontrol">
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <collectionProp name="Assertion.test_strings">
+              <stringProp name="50">200</stringProp>
+            </collectionProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="S1 Özet">
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time><latency>true</latency><timestamp>true</timestamp>
+              <success>true</success><label>true</label><code>true</code>
+              <message>true</message><threadName>true</threadName>
+              <dataType>true</dataType><encoding>false</encoding>
+              <assertions>true</assertions><subresults>true</subresults>
+              <responseData>false</responseData><samplerData>false</samplerData>
+              <xml>false</xml><fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders><requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <bytes>true</bytes><sentBytes>true</sentBytes>
+              <url>true</url><threadCounts>true</threadCounts>
+              <idleTime>true</idleTime><connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename">jmeter-results/REST_S1_Smoke.csv</stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- S2: Light Load – 10 istemci, 2 dk                      -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="S2_LightLoad">
+        <stringProp name="ThreadGroup.num_threads">10</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">5</stringProp>
+        <stringProp name="ThreadGroup.duration">120</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
+          <boolProp name="LoopController.continue_forever">true</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="REST POST /message">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">5000</stringProp>
+          <stringProp name="HTTPSampler.path">/message</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <stringProp name="Argument.value">{"clientId":"jmeter_${__threadNum}","sequenceNo":${__counter(TRUE,)},"sentAt":${__time()},"data":"LIGHT_LOAD_BENCHMARK_PAYLOAD_DATA_256BYTES_XXXX"}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Headers">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="200ms Gecikme">
+            <stringProp name="ConstantTimer.delay">200</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="S2 Özet">
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time><latency>true</latency><timestamp>true</timestamp>
+              <success>true</success><label>true</label><code>true</code>
+              <bytes>true</bytes><sentBytes>true</sentBytes>
+              <connectTime>true</connectTime><fieldNames>true</fieldNames>
+            </value>
+          </objProp>
+          <stringProp name="filename">jmeter-results/REST_S2_LightLoad.csv</stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- S3: Normal Load – 50 istemci, 5 dk                     -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="S3_NormalLoad">
+        <stringProp name="ThreadGroup.num_threads">50</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">15</stringProp>
+        <stringProp name="ThreadGroup.duration">300</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
+          <boolProp name="LoopController.continue_forever">true</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="REST POST /message">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">5000</stringProp>
+          <stringProp name="HTTPSampler.path">/message</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <stringProp name="Argument.value">{"clientId":"jmeter_${__threadNum}","sequenceNo":${__counter(TRUE,)},"sentAt":${__time()},"data":"NORMAL_LOAD_BENCHMARK_PAYLOAD_256BYTES_XXXXXXXXXX"}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Headers">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="100ms Gecikme">
+            <stringProp name="ConstantTimer.delay">100</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="S3 Özet">
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time><latency>true</latency><timestamp>true</timestamp>
+              <success>true</success><label>true</label><code>true</code>
+              <bytes>true</bytes><sentBytes>true</sentBytes>
+              <connectTime>true</connectTime><fieldNames>true</fieldNames>
+            </value>
+          </objProp>
+          <stringProp name="filename">jmeter-results/REST_S3_NormalLoad.csv</stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <!-- S4: Heavy Load – 200 istemci, 5 dk                     -->
+      <!-- ═══════════════════════════════════════════════════════ -->
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="S4_HeavyLoad">
+        <stringProp name="ThreadGroup.num_threads">200</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">30</stringProp>
+        <stringProp name="ThreadGroup.duration">300</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController">
+          <boolProp name="LoopController.continue_forever">true</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="REST POST /message">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">5000</stringProp>
+          <stringProp name="HTTPSampler.path">/message</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <stringProp name="Argument.value">{"clientId":"jmeter_${__threadNum}","sequenceNo":${__counter(TRUE,)},"sentAt":${__time()},"data":"HEAVY_LOAD_PAYLOAD_256B"}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Headers">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="50ms Gecikme">
+            <stringProp name="ConstantTimer.delay">50</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="S4 Özet">
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time><latency>true</latency><timestamp>true</timestamp>
+              <success>true</success><label>true</label><code>true</code>
+              <bytes>true</bytes><sentBytes>true</sentBytes>
+              <connectTime>true</connectTime><fieldNames>true</fieldNames>
+            </value>
+          </objProp>
+          <stringProp name="filename">jmeter-results/REST_S4_HeavyLoad.csv</stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+
+      <!-- Aggregate Report – Tüm senaryolar -->
+      <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Tüm Senaryolar Aggregate">
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time><latency>true</latency><timestamp>true</timestamp>
+            <success>true</success><label>true</label><code>true</code>
+            <bytes>true</bytes><connectTime>true</connectTime><fieldNames>true</fieldNames>
+          </value>
+        </objProp>
+        <stringProp name="filename">jmeter-results/REST_ALL.csv</stringProp>
+      </ResultCollector>
+      <hashTree/>
+
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
