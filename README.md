@@ -193,4 +193,4 @@ BenchmarkDotNet.Artifacts/
 
 ---
 
-*Danışman: Dr. Öğr. Üyesi Bilgin Avenoğlu — Ahmet Yesevi Üniversitesi*
+
