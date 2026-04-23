@@ -1,4 +1,4 @@
-# Protocol Benchmark V3
+# Protocol Benchmark
 
 > **REST, SSE, WebSocket ve MQTT Protokollerinde İstek/Yanıt Yaklaşımının Performans Maliyeti: .NET 8 Ortamında Deneysel Karşılaştırma**
 
