@@ -290,7 +290,7 @@ python analyze.py --dir path/to/results
 44 CSV  → Toplam (~658 MB, ~3,8 milyon ölçüm kaydı)
 ```
 
-> CSV dosyaları boyutları nedeniyle bu repoya dahil edilmemiştir.
+> CSV dosyaları zip olarak projenin Data folder ında dır
 
 ---
 
