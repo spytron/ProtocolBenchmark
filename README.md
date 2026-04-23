@@ -2,8 +2,6 @@
 
 > **REST, SSE, WebSocket ve MQTT Protokollerinde İstek/Yanıt Yaklaşımının Performans Maliyeti: .NET 8 Ortamında Deneysel Karşılaştırma**
 
-Ahmet Yesevi Üniversitesi — Yazılım Mühendisliği Yüksek Lisans Dönem Projesi  
-**Öğrenci:** Selçuk ÇELİK (252188007) | **Danışman:** Dr. Öğr. Üyesi Bilgin AVENOĞLU
 
 ---
 
@@ -335,4 +333,4 @@ python analyze.py --dir path/to/results
 
 ---
 
-*Ahmet Yesevi Üniversitesi — Yazılım Mühendisliği Programı — 2026*
+
